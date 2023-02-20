@@ -1,23 +1,17 @@
-FROM gitpod/workspace-full:latest
+FROM gitpod/workspace-full
 
-USER root
-
-RUN apt-get update && apt-get install -y \
-    curl \
-    git \
-    unzip
-
-RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
-    apt-get install -y nodejs
-
-RUN curl -fsSL https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -o chrome.deb && \
-    dpkg -i chrome.deb || true && \
-    apt-get install -y --no-install-recommends -f && \
-    rm chrome.deb
-
-RUN git clone https://github.com/flutter/flutter.git -b stable && \
+RUN sudo apt-get update && \
+    sudo apt-get install -y wget git unzip libglu1-mesa openjdk-11-jdk && \
+    sudo apt-get clean && \
+    sudo rm -rf /var/cache/apt/* && \
+    sudo rm -rf /var/lib/apt/lists/* && \
+    wget -O flutter.tar.xz https://storage.googleapis.com/flutter_infra/releases/stable/linux/flutter_linux_2.10.1-stable.tar.xz && \
+    tar xf flutter.tar.xz && \
+    rm flutter.tar.xz && \
     echo 'export PATH="$PATH:/workspace/flutter/bin"' >> /home/gitpod/.bashrc
 
-USER gitpod
-
 ENV PATH="/workspace/flutter/bin:${PATH}"
+
+RUN git clone https://github.com/flutter/flutter.git -b stable && \
+    echo 'export PATH="$PATH:/workspace/flutter/bin"' >> /home/gitpod/.bashrc && \
+    flutter create my_flutter_app
