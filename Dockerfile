@@ -5,7 +5,8 @@ RUN sudo apt-get update && \
     sudo apt-get clean && \
     sudo rm -rf /var/cache/apt/* && \
     sudo rm -rf /var/lib/apt/lists/* && \
-    wget -O flutter.tar.xz https://storage.googleapis.com/flutter_infra/releases/stable/linux/flutter_linux_2.10.1-stable.tar.xz && \
+    FLUTTER_VERSION=$(curl https://storage.googleapis.com/flutter_infra/releases/releases_linux.json | awk '/"version":/"stable"/{getline; print}' | awk -F'"' '{print $4}') && \
+    wget -O flutter.tar.xz https://storage.googleapis.com/flutter_infra/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}-stable.tar.xz && \
     tar xf flutter.tar.xz && \
     rm flutter.tar.xz && \
     echo 'export PATH="$PATH:/workspace/flutter/bin"' >> /home/gitpod/.bashrc
